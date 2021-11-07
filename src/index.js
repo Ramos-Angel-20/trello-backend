@@ -1,8 +1,10 @@
 import express, { json } from 'express';
+import cors from 'cors';
 
 import { dbConnect } from './db/database';
 import authRoutes from './routes/auth.routes';
 import projectRoutes from './routes/project.routes'
+import taskRoutes from './routes/task.routes';
 
 // Modelos
 import User from './models/user';
@@ -14,10 +16,12 @@ const app = express();
 
 // Middlewares
 app.use(json());
+app.use(cors());
 
 // Rutas
 app.use('/api/v1', authRoutes);
 app.use('/api/v1', projectRoutes);
+app.use('/api/v1', taskRoutes);
 
 // Relaciones
 Project.belongsTo(User);
@@ -61,7 +65,7 @@ dbConnect().then(() => {
                 
                 
                 //Creamos unas columnas asociadas a ese proyecto. 
-                Column.create({title: 'To do', projectId: res.dataValues.id}).then(res => {
+                Column.create({title: 'To do', projectId: res.dataValues.id}).then(res => { 
 
 
                     //Creamos los tasks asociados a la columna que a su vez esta asociada a un proyecto.
@@ -70,7 +74,11 @@ dbConnect().then(() => {
                     Task.create({description: 'Agregar mis proyectos', columnId: res.dataValues.id});
                     Task.create({description: 'Enlazar a Github', columnId: res.dataValues.id});
                 });
-                Column.create({title: 'In Progress', projectId: res.dataValues.id});
+                Column.create({title: 'In Progress', projectId: res.dataValues.id}).then(res => {
+                    //Creamos los tasks asociados a la columna que a su vez esta asociada a un proyecto.
+                    Task.create({description: 'Hacer un diseño bonito', columnId: res.dataValues.id});
+                    Task.create({description: 'Investigar temas de UI', columnId: res.dataValues.id});
+                });
                 Column.create({title: 'Finished', projectId: res.dataValues.id});
 
 

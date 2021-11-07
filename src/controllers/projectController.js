@@ -1,6 +1,5 @@
 import Project from '../models/project';
 import Column from '../models/column';
-import Task from '../models/task';
 
 import fetchTask from '../helpers/fetchTask';
 
@@ -45,7 +44,7 @@ export const getProjectById = async (req, res) => {
         }
 
         const retrivedColumns = await Column.findAll({
-            attributes: ['id', 'title'],
+            attributes: ['id', 'title', 'createdAt'],
             where: {
                 projectId: projectId
             }
@@ -57,19 +56,18 @@ export const getProjectById = async (req, res) => {
             
             for(const column of retrivedColumns) {
                 const task = fetchTask(column.id);
-                taskPromises.push(task);    
+                taskPromises.push(task);
             }
         }
 
         const responseTasks = await Promise.all(taskPromises);
-        const retrivedTasks = responseTasks.flatMap(item => item);
+        const retrivedTasks = responseTasks.flatMap(item => item); //Usamos flatMap para evitar tener un arreglo de arreglos.
 
         const projectResponse = {
             project: retrivedProject,
             columns: retrivedColumns,
             tasks: retrivedTasks
         };
-
 
         res.status(200).json(projectResponse);
 
