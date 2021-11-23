@@ -1,6 +1,5 @@
 import { Sequelize } from 'sequelize';
 
-
 export const db = new Sequelize('trelloClone', 'root', null, {
     host: 'localhost',
     dialect: 'mysql'
