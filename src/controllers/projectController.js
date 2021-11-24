@@ -10,7 +10,7 @@ export const getProjectsList = async (req, res) => {
     try {
 
         const userProjects = await Project.findAll({
-            attributes: ['id', 'title', 'description'],
+            attributes: ['id', 'title'],
             where: {
                 userId: userId
             }
@@ -53,8 +53,8 @@ export const getProjectById = async (req, res) => {
 
         let taskPromises = []; //Arreglo para el promise.all
         if (retrivedColumns) {
-            
-            for(const column of retrivedColumns) {
+
+            for (const column of retrivedColumns) {
                 const task = fetchTask(column.id);
                 taskPromises.push(task);
             }
@@ -73,6 +73,36 @@ export const getProjectById = async (req, res) => {
 
     } catch (error) {
         res.status(404).json({
+            message: error.message
+        });
+    }
+}
+
+export const addProJect = async (req, res) => {
+    const { projectTitle, userId } = req.body;
+
+    console.log(projectTitle)
+
+    try {
+        
+        const createdProject = await Project.create({
+            title: projectTitle,
+            userId: userId
+        });
+
+
+
+        if (!createdProject) {
+            throw new Error('An error occurred while creating the project...');
+        }
+
+        res.status(201).json({
+            message: `Project ${projectTitle} succesfully created`
+        });
+
+    } catch (error) {
+        
+        res.status(400).json({
             message: error.message
         });
     }

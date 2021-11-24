@@ -41,7 +41,7 @@ dbConnect().then(() => {
         User.create({ firstName: 'Angel', lastName: 'Ramos', email: 'Angel@mail.com', password: 'Gaducito' }).then(res => {
 
             // Creamos los projectos de prueba asociados a ese usuario.
-            Project.create({ title: 'Creacion de trello', description: 'Hacer una app mamalona', userId: res.dataValues.id}).then(res => {
+            Project.create({ title: 'Creacion de trello', userId: res.dataValues.id}).then(res => {
 
 
                 //Creamos unas columnas asociadas a ese proyecto. 
@@ -62,7 +62,7 @@ dbConnect().then(() => {
             });
 
 
-            Project.create({title: 'Creacion de mi portafolio', description: 'Hacer un portafolio prron que me consiga chamba plox', userId: res.dataValues.id}).then(res => {
+            Project.create({title: 'Creacion de mi portafolio', userId: res.dataValues.id}).then(res => {
                 
                 
                 //Creamos unas columnas asociadas a ese proyecto. 
@@ -85,9 +85,9 @@ dbConnect().then(() => {
 
             });
 
-            Project.create({title: 'Hacer la automatacion', description: 'matarme', userId: res.dataValues.id});
-            Project.create({title: 'Descubrir porque estoy solo en esta vida', description: 'valer madre', userId: res.dataValues.id});
-            Project.create({title: 'Ser yo mismo', description: 'ser un fracasado', userId: res.dataValues.id});
+            Project.create({title: 'Hacer la automatacion',  userId: res.dataValues.id});
+            Project.create({title: 'Descubrir porque estoy solo en esta vida', userId: res.dataValues.id});
+            Project.create({title: 'Ser yo mismo', userId: res.dataValues.id});
         });
 
         console.log('Server on port 4000');

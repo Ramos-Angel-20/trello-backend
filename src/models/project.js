@@ -12,10 +12,6 @@ const Project = db.define('project', {
     title: {
         type: STRING,
         allowNull: false,
-    },
-    description: {
-        type: STRING,
-        allowNull: true,
     }
 });
 
