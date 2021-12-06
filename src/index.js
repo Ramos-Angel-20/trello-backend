@@ -21,7 +21,7 @@ app.use(json());
 app.use(cors());
 
 // Rutas
-app.use('/api/v1', authRoutes);
+app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1', projectRoutes);
 app.use('/api/v1', taskRoutes);
 app.use('/api/v1/', columnRoutes);
@@ -38,7 +38,7 @@ dbConnect().then(() => {
         //Setup para crear datos de prueba...
 
         // Creamos un usuario de prueba.
-        User.create({ firstName: 'Angel', lastName: 'Ramos', email: 'Angel@mail.com', password: 'Gaducito' }).then(res => {
+        User.create({ firstName: 'Angel', lastName: 'Ramos', email: 'Angel@mail.com', password: 'Gaducito', google: false }).then(res => {
 
             // Creamos los projectos de prueba asociados a ese usuario.
             Project.create({ title: 'Creacion de trello', userId: res.dataValues.id}).then(res => {

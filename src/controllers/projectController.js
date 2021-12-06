@@ -10,7 +10,7 @@ export const getProjectsList = async (req, res) => {
     try {
 
         const userProjects = await Project.findAll({
-            attributes: ['id', 'title'],
+            attributes: ['id', 'title', 'createdAt'],
             where: {
                 userId: userId
             }
@@ -33,10 +33,11 @@ export const getProjectsList = async (req, res) => {
 export const getProjectById = async (req, res) => {
     const { projectId } = req.params;
 
+
     try {
 
         const retrivedProject = await Project.findByPk(projectId, {
-            attributes: ['id', 'title', 'description']
+            attributes: ['id', 'title']
         });
 
         if (!retrivedProject) {
@@ -63,11 +64,14 @@ export const getProjectById = async (req, res) => {
         const responseTasks = await Promise.all(taskPromises);
         const retrivedTasks = responseTasks.flatMap(item => item); //Usamos flatMap para evitar tener un arreglo de arreglos.
 
+
+
         const projectResponse = {
             project: retrivedProject,
             columns: retrivedColumns,
             tasks: retrivedTasks
         };
+
 
         res.status(200).json(projectResponse);
 
@@ -78,13 +82,13 @@ export const getProjectById = async (req, res) => {
     }
 }
 
-export const addProJect = async (req, res) => {
+export const addProject = async (req, res) => {
     const { projectTitle, userId } = req.body;
 
-    console.log(projectTitle)
+    console.log(projectTitle, userId);
 
     try {
-        
+
         const createdProject = await Project.create({
             title: projectTitle,
             userId: userId
@@ -97,13 +101,43 @@ export const addProJect = async (req, res) => {
         }
 
         res.status(201).json({
-            message: `Project ${projectTitle} succesfully created`
+            createdProject
         });
 
     } catch (error) {
-        
+
         res.status(400).json({
             message: error.message
         });
     }
+}
+
+export const deleteProject = async (req, res) => {
+
+    const { projectId } = req.params;
+
+    console.log(`llego un id para borrar: ${projectId}`);
+
+    try {
+        
+        const deletedProject = await Project.destroy({where: {
+            id: projectId
+        }});
+
+        if (!deletedProject) {
+            throw new Error(`An error ocurred while deleting the project whit id: ${projectId}`);
+        }
+
+        res.status(201).json({
+            deletedProject 
+        });
+
+    } catch (error) {
+        console.log(error);
+
+        res.status(400).json({
+            message: error.message
+        });
+    }    
+
 }

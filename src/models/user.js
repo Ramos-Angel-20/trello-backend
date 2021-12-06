@@ -1,4 +1,4 @@
-import { DataTypes, STRING, UUIDV4 } from 'sequelize';
+import { DataTypes, STRING, UUIDV4, BOOLEAN } from 'sequelize';
 import { db } from '../db/database';
 
 
@@ -20,11 +20,20 @@ const User = db.define('user', {
     },
     email: {
         type: STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     password: {
         type: STRING,
         allowNull: false
+    },
+    google: {
+        type: BOOLEAN,
+        allowNull: false
+    },
+    profilePicUrl: {
+        type: STRING,
+        allowNull: true
     }
 });
 
