@@ -1,6 +1,6 @@
 import Task from '../models/task';
 
-const fetchTask = (columnId) => {
+const fetchTask = (columnId, t) => {
     return new Promise((resolve, reject) => {
         
         const tasks = Task.findAll({

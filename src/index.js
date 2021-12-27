@@ -1,5 +1,9 @@
 import express, { json } from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
+//TODO: REMOVER
+import slugify from 'slugify';
 
 import { dbConnect } from './db/database';
 
@@ -19,6 +23,7 @@ const app = express();
 // Middlewares
 app.use(json());
 app.use(cors());
+dotenv.config();
 
 // Rutas
 app.use('/api/v1/auth', authRoutes);
@@ -41,53 +46,110 @@ dbConnect().then(() => {
         User.create({ firstName: 'Angel', lastName: 'Ramos', email: 'Angel@mail.com', password: 'Gaducito', google: false }).then(res => {
 
             // Creamos los projectos de prueba asociados a ese usuario.
-            Project.create({ title: 'Creacion de trello', userId: res.dataValues.id}).then(res => {
+
+            const slug1 = slugify('Creacion de trello', {
+                trim: true,
+                lower: true
+            });
+
+            Project.create({
+                title: 'Creacion de trello',
+                userId: res.dataValues.id,
+                slug: slug1
+            }).then(res => {
 
 
                 //Creamos unas columnas asociadas a ese proyecto. 
-                Column.create({title: 'To do', projectId: res.dataValues.id}).then(res => {
+                Column.create({ title: 'To do', projectId: res.dataValues.id }).then(res => {
 
 
                     //Creamos los tasks asociados a la columna que a su vez esta asociada a un proyecto.
-                    Task.create({description: 'Crear el frontend', columnId: res.dataValues.id});
-                    Task.create({description: 'Crear el diseño', columnId: res.dataValues.id});
-                    Task.create({description: 'Crear el backend', columnId: res.dataValues.id});
-                    Task.create({description: 'Crear la base de datos', columnId: res.dataValues.id});
+                    Task.create({ description: 'Crear el frontend', columnId: res.dataValues.id });
+                    Task.create({ description: 'Crear el diseño', columnId: res.dataValues.id });
+                    Task.create({ description: 'Crear el backend', columnId: res.dataValues.id });
+                    Task.create({ description: 'Crear la base de datos', columnId: res.dataValues.id });
                 });
-                Column.create({title: 'In Progress', projectId: res.dataValues.id});
-                Column.create({title: 'Finished', projectId: res.dataValues.id});
+                Column.create({ title: 'In Progress', projectId: res.dataValues.id });
+                Column.create({ title: 'Finished', projectId: res.dataValues.id });
 
 
 
+            }).catch(err => {
+                console.log(err);
             });
 
+            const slug2 = slugify('Creacion de mi portafolio', {
+                trim: true,
+                lower: true
+            });
 
-            Project.create({title: 'Creacion de mi portafolio', userId: res.dataValues.id}).then(res => {
-                
-                
+            Project.create({
+                title: 'Creacion de mi portafolio',
+                userId: res.dataValues.id,
+                slug: slug2
+            }).then(res => {
+
+
                 //Creamos unas columnas asociadas a ese proyecto. 
-                Column.create({title: 'To do', projectId: res.dataValues.id}).then(res => { 
+                Column.create({ title: 'To do', projectId: res.dataValues.id }).then(res => {
 
 
                     //Creamos los tasks asociados a la columna que a su vez esta asociada a un proyecto.
-                    Task.create({description: 'Crear el frontend', columnId: res.dataValues.id});
-                    Task.create({description: 'Crear el diseño', columnId: res.dataValues.id });
-                    Task.create({description: 'Agregar mis proyectos', columnId: res.dataValues.id });
-                    Task.create({description: 'Enlazar a Github', columnId: res.dataValues.id });
+                    Task.create({ description: 'Crear el frontend', columnId: res.dataValues.id });
+                    Task.create({ description: 'Crear el diseño', columnId: res.dataValues.id });
+                    Task.create({ description: 'Agregar mis proyectos', columnId: res.dataValues.id });
+                    Task.create({ description: 'Enlazar a Github', columnId: res.dataValues.id });
                 });
-                Column.create({title: 'In Progress', projectId: res.dataValues.id}).then(res => {
+                Column.create({ title: 'In Progress', projectId: res.dataValues.id }).then(res => {
                     //Creamos los tasks asociados a la columna que a su vez esta asociada a un proyecto.
-                    Task.create({description: 'Hacer un diseño bonito', columnId: res.dataValues.id});
-                    Task.create({description: 'Investigar temas de UI', columnId: res.dataValues.id});
+                    Task.create({ description: 'Hacer un diseño bonito', columnId: res.dataValues.id });
+                    Task.create({ description: 'Investigar temas de UI', columnId: res.dataValues.id });
                 });
-                Column.create({title: 'Finished', projectId: res.dataValues.id});
+                Column.create({ title: 'Finished', projectId: res.dataValues.id });
 
 
+            }).catch(err => {
+                console.log(err);
             });
 
-            Project.create({title: 'Hacer la automatacion',  userId: res.dataValues.id});
-            Project.create({title: 'Descubrir porque estoy solo en esta vida', userId: res.dataValues.id});
-            Project.create({title: 'Ser yo mismo', userId: res.dataValues.id});
+            const slug3 = slugify('Hacer la automatacion', {
+                trim: true,
+                lower: true
+            });
+
+            Project.create({
+                title: 'Hacer la automatacion',
+                userId: res.dataValues.id,
+                slug: slug3
+            }).catch(err => {
+                console.log(err);
+            });
+
+            const slug4 = slugify('Descubrir porque estoy solo en esta vida', {
+                trim: true,
+                lower: true
+            });
+
+            Project.create({
+                title: 'Descubrir porque estoy solo en esta vida',
+                userId: res.dataValues.id,
+                slug: slug4
+            }).catch(err => {
+                console.log(err);
+            });
+
+            const slug5 = slugify('Ser yo mismo', {
+                trim: true,
+                lower: true
+            });
+
+            Project.create({
+                title: 'Ser yo mismo',
+                userId: res.dataValues.id,
+                slug: slug5 
+            }).catch(err => {
+                console.log(err);
+            });
         });
 
         console.log('Server on port 4000');

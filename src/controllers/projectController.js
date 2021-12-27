@@ -1,7 +1,11 @@
+import slugify from 'slugify';
 import Project from '../models/project';
 import Column from '../models/column';
-
 import fetchTask from '../helpers/fetchTask';
+import { db } from '../db/database';
+
+//TODO: VERIFICAR QUE TODAS LAS OPERACIONES CON SLUGS FUNCIONEN.
+//TODO: Verificar que la transaccion funcione.
 
 export const getProjectsList = async (req, res) => {
 
@@ -10,7 +14,7 @@ export const getProjectsList = async (req, res) => {
     try {
 
         const userProjects = await Project.findAll({
-            attributes: ['id', 'title', 'createdAt'],
+            attributes: ['id', 'title', 'createdAt', 'slug'],
             where: {
                 userId: userId
             }
@@ -32,7 +36,7 @@ export const getProjectsList = async (req, res) => {
 
 export const getProjectById = async (req, res) => {
     const { projectId } = req.params;
-
+    const transaction = await db.transaction();
 
     try {
 
@@ -53,15 +57,19 @@ export const getProjectById = async (req, res) => {
 
 
         let taskPromises = []; //Arreglo para el promise.all
+
         if (retrivedColumns) {
 
             for (const column of retrivedColumns) {
-                const task = fetchTask(column.id);
+                const task = fetchTask(column.id, transaction);
                 taskPromises.push(task);
             }
         }
 
         const responseTasks = await Promise.all(taskPromises);
+
+        await transaction.commit();
+
         const retrivedTasks = responseTasks.flatMap(item => item); //Usamos flatMap para evitar tener un arreglo de arreglos.
 
 
@@ -76,6 +84,9 @@ export const getProjectById = async (req, res) => {
         res.status(200).json(projectResponse);
 
     } catch (error) {
+
+        await transaction.rollback();
+
         res.status(404).json({
             message: error.message
         });
@@ -85,13 +96,18 @@ export const getProjectById = async (req, res) => {
 export const addProject = async (req, res) => {
     const { projectTitle, userId } = req.body;
 
-    console.log(projectTitle, userId);
+    const slug = slugify(projectTitle, {
+        trim: true,
+        lower: true
+    });
+    
 
     try {
 
         const createdProject = await Project.create({
             title: projectTitle,
-            userId: userId
+            userId: userId,
+            slug: slug
         });
 
 

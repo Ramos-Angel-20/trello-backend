@@ -12,6 +12,18 @@ const Project = db.define('project', {
     title: {
         type: STRING,
         allowNull: false,
+    },
+    backgroundColor: {
+        type: STRING,
+        allowNull: true,
+    },
+    backgroundImageUrl: {
+        type: STRING,
+        allowNull: true,
+    },
+    slug: {
+        type: STRING,
+        allowNull: false
     }
 });
 

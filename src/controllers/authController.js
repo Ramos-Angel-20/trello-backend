@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 import User from '../models/user';
+import generateJwt from '../helpers/generateJwt';
 
 export const register = async (req, res) => {
     
@@ -34,12 +35,14 @@ export const register = async (req, res) => {
             throw new Error('Something went wrong creating the new user');
         } 
 
-        res.status(201).json({
-            message: 'New user succesfully created',
-            email: newUser.email,
-            id: newUser.id
-        });
+        
+        //Generate JWT
+        const token = await generateJwt(newUser.id);
 
+        res.status(200).json({
+            email: newUser.email,
+            token
+        });
 
     } catch (error) {
         console.log(error);
@@ -62,16 +65,21 @@ export const login = async (req, res) => {
         if (!userExists) {
             throw new Error('Email provided does not exists');
         }
-
+        
         const hashedPassword = userExists.password;
         const passwordDoesMatch = await bcrypt.compare(password, hashedPassword);
 
         if (!passwordDoesMatch) {
             throw new Error('Incorrect password');
         }
+        
+        //Generate JWT
+        const token = await generateJwt(userExists.id);
 
         res.status(200).json({
-            userExists
+            email: userExists.email,
+            profilePicUrl: userExists.profilePicUrl,
+            token
         });  
 
     } catch (error) {
@@ -80,5 +88,4 @@ export const login = async (req, res) => {
             message: error.message
         });
     }
-
 }
